@@ -1,2 +1,3 @@
+#!/bin/bash -x
 source ./venv/bin/activate
-mavproxy.py --master=/dev/tty.usbmodem01 --baudrate=57600
+python3 ./src/main.py

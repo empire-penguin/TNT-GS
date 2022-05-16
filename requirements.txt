@@ -1,8 +1,9 @@
 wheel
+keyboard
 pymavlink
 wxPython
 gnureadline
 billiard
-numpy 
+numpy
 pyparsing
 MAVProxy

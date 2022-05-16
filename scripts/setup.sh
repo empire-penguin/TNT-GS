@@ -16,4 +16,4 @@ echo "Installing dependencies..."
 pip install -r requirements.txt
 
 echo "Installation completed successfully"
-run.sh
+bash ./scripts/run.sh
