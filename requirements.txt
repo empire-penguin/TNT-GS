@@ -1,2 +1,8 @@
+wheel
 pymavlink
-keyboard
+wxPython
+gnureadline
+billiard
+numpy 
+pyparsing
+MAVProxy
