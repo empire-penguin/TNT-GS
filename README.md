@@ -3,7 +3,7 @@
 [![Releases](https://img.shields.io/endpoint?url=https%3A%2F%2Fempire-penguin.github.io%2Fempire-penguin%2Fdata%2FTNT-GS%2Fshields%2Fversion.json)](https://github.com/empire-penguin/TNT-GS)
 
 
-Ground Station for Triton Neurotech
+Ground Station for Triton Neurotech Drone Project
 -----------------------------------
 -----------------------------------
 
