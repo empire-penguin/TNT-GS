@@ -7,6 +7,14 @@ Ground Station for Triton Neurotech Drone Project
 -----------------------------------
 -----------------------------------
 
+Important Links
+---------------
+* [MAVlink Messages Protocol](https://mavlink.io/en/messages/common.html#COMMAND_LONG)
+* [MAVlink Command Protocol](https://mavlink.io/en/services/command.html#MAV_CMD)
+* [Ardupilot Guided Mode](https://ardupilot.org/copter/docs/ac2_guidedmode.html)
+* [Ardupilot Movement Commands in Guided Mode](https://ardupilot.org/dev/docs/copter-commands-in-guided-mode.html)
+
+
 TODO
 ----
 * Create main DFA for state handling
