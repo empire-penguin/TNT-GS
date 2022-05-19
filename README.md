@@ -1,5 +1,5 @@
 # TNT-GS
-[![Releases](https://img.shields.io/github/release/PX4/PX4-Autopilot.svg)](https://github.com/PX4/PX4-Autopilot/releases)
+[![Releases]()]()
 
 Ground Station for Triton Neurotech
 -----------------------------------
