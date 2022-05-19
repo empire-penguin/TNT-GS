@@ -7,6 +7,11 @@ Ground Station for Triton Neurotech Drone Project
 -----------------------------------
 -----------------------------------
 
+TODO
+----
+* Create main DFA for state handling
+* Act on the current state to command drone
+
 
 Opening a Simulator
 ------------------
