@@ -2,7 +2,7 @@ from pymavlink import mavutil
 import keyboard
 
 # Start a connection listening to a UDP port
-drone_connection = mavutil.mavlink_connection('/dev/tty.usbserial-0001',baud=57600)
+drone_connection = mavutil.mavlink_connection('/dev/tty.usbserial-0001' ,baud=57600)
 
 # Wait for the first heartbeat 
 #   This sets the system and component ID of remote system for the link
