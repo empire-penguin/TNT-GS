@@ -1,5 +1,4 @@
 wheel
-keyboard
 pymavlink
 wxPython
 gnureadline
@@ -7,3 +6,5 @@ billiard
 numpy
 pyparsing
 MAVProxy
+dronekit
+dronekit-sitl
