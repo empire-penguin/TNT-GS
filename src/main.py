@@ -2,8 +2,7 @@ from pymavlink import mavutil
 import commands
 
 # Start a connection listening to a UDP port
-drone = mavutil.mavlink_connection('udpin:localhost:14550')
-
+drone_connection = mavutil.mavlink_connection('/dev/tty.usbserial-0001' ,baud=57600)
 
 def main():
     # Wait for a heartbeat
