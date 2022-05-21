@@ -1,6 +1,7 @@
 from pymavlink import mavutil
 import commands
 import sys
+import time
 
 # Start a connection listening to a UDP port
 drone = mavutil.mavlink_connection('/dev/tty.usbserial-0001', baud=57600)
@@ -12,24 +13,12 @@ def main():
         "Heartbeat from system (system %u component %u)" 
         % (drone.target_system, drone.target_component)
     )
+    start_time = time.time()
+    # Arm the drone
+    commands.arm_drone(drone)
+    # Takeoff
+    commands.takeoff(drone)
+    # Go to a position
+    commands.goto(drone, 0, 0, -10, start_time)
 
-    while(True):
-        # Get the current drone state
-        msg = drone.recv_match(type='SYS_STATUS', blocking=True)
-        # Print the current msg
-        print("Drone state: %s" % msg)
-
-        if not msg:
-            return
-        if msg.get_type() == "BAD_DATA":
-            if mavutil.all_printable(msg.data):
-                sys.stdout.write(msg.data)
-                sys.stdout.flush()
-
-        # Send the command to arm the drone
-        if drone == False:
-            commands.arm_drone()
-            
-        # Send the command to disarm the drone
-        if drone == True:
-            commands.disarm_drone()
+main()
