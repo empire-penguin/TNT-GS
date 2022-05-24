@@ -2,9 +2,17 @@ from pymavlink import mavutil
 import commands
 import sys
 import time
+from os.path import exists
 
-# Start a connection listening to a UDP port
-drone = mavutil.mavlink_connection('/dev/tty.usbserial-0001', baud=57600)
+if (exists('/dev/tty.usbserial-0001')):
+    port = '/dev/tty.usbserial-0001'
+    baud = 57600
+else:
+    port = 'udpin:localhost:14550'
+    baud = 115200
+
+# connect to a drone over mavlink
+drone = mavutil.mavlink_connection(port, baud=baud)
 
 def main():
     # Wait for a heartbeat
@@ -14,11 +22,34 @@ def main():
         % (drone.target_system, drone.target_component)
     )
     start_time = time.time()
-    # Arm the drone
-    commands.arm_drone(drone)
-    # Takeoff
-    commands.takeoff(drone)
-    # Go to a position
-    commands.goto(drone, 0, 0, -10, start_time)
 
+    # arm the drone
+    # takeoff 10
+
+    # Set computer to control the drone
+    # commands.set_param(drone,b'ARMING_CHECK',0)
+    # commands.get_param(drone, b'ARMING_CHECK')
+
+    commands.set_home(drone)
+    msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
+    print(msg)
+
+    commands.set_guided_mode(drone)
+    msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
+    print(msg)
+
+    # arm drone
+    commands.arm(drone)
+    msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
+    print(msg)
+
+    # takeoff
+    commands.takeoff(drone)
+    msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
+    print(msg)
+    
+    while(True):
+        msg = drone.recv_match(type="HEARTBEAT", blocking=True)
+        print(msg)
+    
 main()
