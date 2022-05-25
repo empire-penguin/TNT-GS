@@ -114,6 +114,15 @@ def land(connection):
         0  # param7
     )
 
+def loiter(connection):
+    print("LOITERING")
+    connection.mav.command_long_send(
+        connection.target_system,
+        connection.target_component,
+        mavutil.mavlink.MAV_CMD_NAV_LOITER_TIME,
+        0, 5, 0, 0, 0, 0, 0, 0
+    )
+
 def get_all_params(connection):
     connection.mav.send(
         mavutil.mavlink.MAVLink_param_request_list_message(
