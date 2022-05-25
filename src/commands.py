@@ -48,3 +48,12 @@ def goto(connection, x, y, z, start_time):
         0, # yaw
         0, # yaw rate
     ))
+
+def loiter(connection):
+    print("LOITERING")
+    connection.mav.command_long_send(
+        connection.target_system,
+        connection.target_component,
+        mavutil.mavlink.MAV_CMD_NAV_LOITER_TIME,
+        0, 5, 0, 0, 0, 0, 0, 0
+    )

@@ -20,5 +20,8 @@ def main():
     commands.takeoff(drone)
     # Go to a position
     commands.goto(drone, 0, 0, -10, start_time)
+    #loiter while hand signal is not equal to loiter signal
+    while :
+        commands.loiter(drone)
 
 main()
