@@ -2,7 +2,7 @@ from pymavlink import mavutil
 import time
 
 def arm(connection):
-    print("ARMED")
+    print("---ARMED")
     connection.mav.command_long_send(
         connection.target_system,
         connection.target_component,
@@ -11,7 +11,7 @@ def arm(connection):
     )
 
 def disarm(connection):
-    print("DISARMED")
+    print("---DISARMED")
     connection.mav.command_long_send(
         connection.target_system,
         connection.target_component,
@@ -20,7 +20,7 @@ def disarm(connection):
     )
 
 def takeoff(connection):
-    print("TAKING OFF") 
+    print("---TAKING OFF") 
     connection.mav.command_long_send(
         connection.target_system, 
         connection.target_component, 
@@ -29,7 +29,7 @@ def takeoff(connection):
     )
 
 def goto(connection, x, y, z, start_time):
-    print("GOING UP")
+    print("---GOING UP")
     connection.mav.send(
         mavutil.mavlink.MAVLink_set_position_target_local_ned_message(
             int(time.time() - start_time), # time_boot_ms
@@ -51,8 +51,8 @@ def goto(connection, x, y, z, start_time):
         )
     )
 
-def set_guided_mode(connection):
-    print("SETTING GUIDED MODE")
+def set_offboard_mode(connection):
+    print("---SETTING OFFBOARD MODE")
     connection.mav.command_long_send(
         connection.target_system,
         connection.target_component,
@@ -67,7 +67,7 @@ def set_guided_mode(connection):
         0  # param7
     )
 def set_home(connection):
-    print("SETTING HOME")
+    print("---SETTING HOME")
     connection.mav.command_int_send(
         connection.target_system,
         connection.target_component,
@@ -85,6 +85,7 @@ def set_home(connection):
     )
 
 def rtn_to_launch(connection):
+    print("---GOING HOME")
     connection.mav.command_long_send(
         connection.target_system,
         connection.target_component,
@@ -100,6 +101,7 @@ def rtn_to_launch(connection):
     )
 
 def land(connection):
+    print("---LANDING")
     connection.mav.command_long_send(
         connection.target_system,
         connection.target_component,

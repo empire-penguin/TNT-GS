@@ -7,6 +7,9 @@ from os.path import exists
 if (exists('/dev/tty.usbserial-0001')):
     port = '/dev/tty.usbserial-0001'
     baud = 57600
+elif (exists('/dev/cu.usbmodem01')):
+    port = '/dev/cu.usbmodem01'
+    baud = 115200
 else:
     port = 'udpin:localhost:14550'
     baud = 115200
@@ -30,23 +33,46 @@ def main():
     # commands.set_param(drone,b'ARMING_CHECK',0)
     # commands.get_param(drone, b'ARMING_CHECK')
 
+    
     commands.set_home(drone)
     msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
-    print(msg)
+    while(True):
+        if (msg.result == 0):
+            print("Command completed")
+            break
+        else:
+            commands.set_home(drone)
+            msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
+    
+    # commands.set_offboard_mode(drone)
+    # msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
+    # while(True):
+    #     if (msg.result == 0):
+    #         print("Command completed")
+    #         break
+    #     else:
+    #         commands.set_guided_mode(drone)
+    #         msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
 
-    commands.set_guided_mode(drone)
-    msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
-    print(msg)
-
-    # arm drone
     commands.arm(drone)
     msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
-    print(msg)
+    while(True):
+        if (msg.result == 0):
+            print("Command completed")
+            break
+        else:
+            commands.arm(drone)
+            msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
 
-    # takeoff
     commands.takeoff(drone)
     msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
-    print(msg)
+    while(True):
+        if (msg.result == 0):
+            print("Command completed")
+            break
+        else:
+            commands.takeoff(drone)
+            msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
     
     while(True):
         msg = drone.recv_match(type="HEARTBEAT", blocking=True)
