@@ -1,16 +1,20 @@
-import random
-import time
-
-from pylsl import StreamInfo, StreamOutlet
-from numpy.random import normal
+from pylsl import StreamInfo, StreamInlet
+from data_augmentation import data_augmentor
+from joblib import load
 
 info = StreamInfo('Python Stream','Markers',1,0,'string','Test Marker Stream')
-outlet = StreamOutlet(info)
+info_out = StreamInfo('Python Stream','Markers',1,0,'string','Test Marker Stream')
 
-print('Now sending markers...')
+outlet = StreamInlet(info_out)
+inlet = StreamInlet(info)
 
+inlet.open_stream()
+clf = load('rf_model.sav')
+
+print('Listening for incoming data... ')
 while True:
-    random_data = str(normal(loc=0,scale=4,size=1)[0])
-    print(random_data)
-    outlet.push_sample([random_data])
-    time.sleep(random.random()*3)
+
+    received_data = inlet.pull_sample()
+    feature_vector = data_augmentor.channel_wise_crop(received_data,150)
+    model_output = clf.predict(feature_vector)
+    outlet.push_sample(model_output)
