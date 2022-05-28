@@ -1,3 +1,5 @@
+from multiprocessing import Process,Pipe
+
 def user_input(input):
     try:
         # Convert it into integer
@@ -15,3 +17,8 @@ def user_input(input):
 
 input1 = input("Enter an Integer")
 check_user_input(input1)
+
+def f(child_conn):
+    msg = val
+    child_conn.send(msg)
+    child_conn.close()
