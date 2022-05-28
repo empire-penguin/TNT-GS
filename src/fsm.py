@@ -13,10 +13,13 @@ UP = 3
 DOWN = 4
 INTERRUPT = #SPACE KEYINPUT TODO
 
+#TODO, change Rotation
+
+#North, East, Down, Degrees toward East
 CurrLoc = (0,0,0,0)
-CurrX = 0;
-CurrY = 0;
-CurrY = 0;
+XOffset = 5;
+YOffset = 5;
+ZOffset = 5;
 
 while(! INTERRUPT):
   def buffer():
@@ -27,9 +30,13 @@ while(! INTERRUPT):
     return #TODO
   def up():
     print("-- Go Xm North, 0m East, -5m Down within local coordinate system, turn to face East")
-    await drone.offboard.set_position_ned(PositionNedYaw(5.0, 0.0, -5.0, 90.0))
+    CurrLoc[2] -= YOffset
+    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
     await asyncio.sleep(10)
   def down():
+    CurrLoc[2] += YOffset
+    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
+    await asyncio.sleep(10)
     return #TODO
 
   switcher = {
