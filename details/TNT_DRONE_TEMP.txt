@@ -1,0 +1,45 @@
+/*
+We will be adding a set distance to the waypoint for any unique signal regardless of signal length - Ex. left, no matter how long held, will only move the drone 5 meters left
+*/
+
+returnToLand = false;
+origin[] = [0,0,0];
+home[] = [0,0,z];
+curLoc[] = [0,0,0];
+
+while !returnToLand {
+//waypoint(x,y,z)  NOTE: -z = up
+//WE are ONLY MOVING y and z
+
+switch(input);
+
+case 0;
+//Buffer
+null;
+
+case 1;
+//Up
+newZ = z - 5;
+waypoint(x, y, newZ);
+curLoc[2] = newZ;
+
+case 2;
+//Down
+newZ = z + 5;
+waypoint(x, y, newZ);
+curLoc[2] = newZ;
+
+case 3;
+//Left
+newY = y - 5;
+waypoint(x, newY, z);
+
+case 4;
+//Right
+newY = y + 5;
+waypoint(x, newY, z);
+
+}
+
+waypoint(0, 0, 0)
+
