@@ -67,10 +67,11 @@ async def run():
     await drone.action.takeoff()
     await asyncio.sleep(10)
 
+    CurrLoc = ORIGIN
         #Have new position be vertical lift and set this as origin in flight-coordinate
     # Commander the drone to move to a new position
     print("-- Setting initial setpoint")
-    await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -5, 0.0))
+    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
 
     # Start the remote control loop
     print("-- Starting offboard")
