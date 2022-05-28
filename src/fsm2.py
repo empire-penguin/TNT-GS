@@ -69,8 +69,23 @@ switcher = {
 def switch(input_num):
   return switcher.get(input_num)
 
-while ! INTERRUPT:
-  signal = #get signal number 0-6 from LSL function
-  switch(signal)
+flag = 1
 
+i = 0
+signals = [3,3,0,2,0,1,0,4,0]
+
+while ! INTERRUPT:
+  # signal = get signal number 0-6 from LSL function
+  if flag == 1:
+      switch(signals[i])
+      flag = 0
+  else:
+      switch(0)
+  if signals[i] == 0:
+      flag = 1 
+  i += 1
+
+  if i == 9:
+      break
+  
 land()
