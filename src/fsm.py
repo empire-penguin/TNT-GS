@@ -5,12 +5,18 @@ import asyncio
 from mavsdk import System
 from mavsdk.offboard import (OffboardError, PositionNedYaw)
 
+#State Assignemnts
 BUFFER = 0
 LEFT = 1
 RIGHT = 2
 UP = 3
 DOWN = 4
 INTERRUPT = #SPACE KEYINPUT TODO
+
+CurrLoc = (0,0,0,0)
+CurrX = 0;
+CurrY = 0;
+CurrY = 0;
 
 while(! INTERRUPT):
   def buffer():
@@ -20,7 +26,7 @@ while(! INTERRUPT):
   def right():
     return #TODO
   def up():
-    print("-- Go 5m North, 0m East, -5m Down within local coordinate system, turn to face East")
+    print("-- Go Xm North, 0m East, -5m Down within local coordinate system, turn to face East")
     await drone.offboard.set_position_ned(PositionNedYaw(5.0, 0.0, -5.0, 90.0))
     await asyncio.sleep(10)
   def down():
