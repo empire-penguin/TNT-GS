@@ -134,7 +134,10 @@ async def run():
 #Send drone back to flight origin in the sky
 CurrLoc = ORIGIN
 await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-#landing Proticol with checking telemetry data that currPos = finalPos of (0,0,0,0)
+#Landing Protocol with checking telemetry data that currPos = finalPos of (0,0,0,0)
+await drone.action.land()
+# look for the function that checks if youve gotten where you need to be
+await asyncio.sleep(60)
 
 
 if __name__ == "__main__":
