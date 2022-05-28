@@ -1,4 +1,5 @@
 #Implementing FSM
+from signal import signal
 import keyboard
 import asyncio
 from mavsdk import System
@@ -7,87 +8,39 @@ from mavsdk.offboard import (OffboardError, PositionNedYaw)
 import time
 from os.path import exists
 
+from macros import *
+from movement import (buffer, left, right, up, down, land)
+
+
 async def fsm2(connection):
 
-    CurrLoc = (0,0,0,0)
-    #Intialize CurrLoc as a tuple instead of a list to preserve parameter order
-    #Initalize Curr Loc earlier
-    #Read documentation to understand 4th 4-tuple orientation angle 
-    XOffset = 5
-    YOffset = 5
-    ZOffset = -5
-
-    #State Assignemnts
-    BUFFER = 0
-    LEFT = 1
-    RIGHT = 2
-    UP = 3
-    DOWN = 4
-    INTERRUPT = false #TODO implement spacebar input
-
-    async def buffer():
-        # TODO this function may require a rework
-        print("-- Maintain current position")
-        await connection.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-        await asyncio.sleep(10)
-    async def left():
-        print("-- Move five meters to the left")
-        CurrLoc[1] -= YOffset
-        await connection.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-        await asyncio.sleep(10)
-    async def right():
-        print("-- Move five meters to the right")
-        CurrLoc[1] += YOffset
-        await connection.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-        await asyncio.sleep(10)
-    async def up():
-        print("-- Move five meters up")
-        CurrLoc[2] += ZOffset
-        await connection.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-        await asyncio.sleep(10)
-    async def down():
-        print("-- Move five meters down")
-        CurrLoc[2] -= ZOffset
-        await connection.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-        await asyncio.sleep(10)
-    async def land():
-        print("-- Land")
-        CurrLoc = (0,0,0,0)
-        await connection.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-        await connection.action.land()
-        # look for the function that checks if youve gotten where you need to be
-        await asyncio.sleep(60)
-
-    #TODO, change Rotation
-
-    switcher = {
-    BUFFER: buffer(),
-    LEFT: left(),
-    RIGHT: right(),
-    UP: up(),
-    DOWN: down(),
-    }
-
-    def switch(input_num):
-        return switcher.get(input_num)
+    CurrLoc = PositionNedYaw(0,0,-5,0)
 
     flag = 1
 
     i = 0
-    signals = [3,3,0,2,0,1,0,4,0]
+    signals = [UP,UP,BUFFER,RIGHT,BUFFER,LEFT,BUFFER,DOWN]
 
-    while not INTERRUPT:
+    while not INTERRUPT and i < len(signals):
         # signal = get signal number 0-6 from LSL function
         if flag == 1:
-            switch(signals[i])
+            if (signals[i] == BUFFER):
+                await buffer(connection, CurrLoc)
+            elif (signals[i] == LEFT):
+                await left(connection, CurrLoc)
+            elif (signals[i] == RIGHT):
+                await right(connection, CurrLoc)
+            elif (signals[i] == UP):
+                await up(connection, CurrLoc)
+            elif (signals[i] == DOWN):
+                await down(connection, CurrLoc)
+            elif (signals[i] == LAND):
+                await land(connection, CurrLoc)
             flag = 0
         else:
-            switch(0)
-        if signals[i] == 0:
+            await buffer(connection, CurrLoc)
+        if signals[i] == BUFFER:
             flag = 1 
         i += 1
 
-        if i == 9:
-            break
-    
-    land()
+    await land(connection, CurrLoc)
