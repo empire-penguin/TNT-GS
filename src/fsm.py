@@ -26,10 +26,18 @@ UP = 3
 DOWN = 4
 INTERRUPT = #SPACE KEYINPUT TODO
 
-async def run():
+#North, East, Down, Degrees toward East
+CurrLoc = (0,0,0,0)
+    #Intialize CurrLoc as a tuple instead of a list to preserve parameter order
+    #Initalize Curr Loc earlier
+    #Read documentation to understand 4th 4-tuple orientation angle 
+XOffset = 5;
+YOffset = 5;
+ZOffset = -5;
+LAND = (0,0,0,0) #landing coordiante
+ORIGIN = (0,0,-5,0) #before land command
 
-    origin = [0,0,0] #for land command
-    curLoc = [0,0,0]
+async def run():
 
     # Initialize the drone
     drone = System()
@@ -59,9 +67,10 @@ async def run():
     await drone.action.takeoff()
     await asyncio.sleep(10)
 
+        #Have new position be vertical lift and set this as origin in flight-coordinate
     # Commander the drone to move to a new position
     print("-- Setting initial setpoint")
-    await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, 0.0, 0.0))
+    await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -5, 0.0))
 
     # Start the remote control loop
     print("-- Starting offboard")
@@ -74,14 +83,6 @@ async def run():
         return
 #TODO, change Rotation
 
-#North, East, Down, Degrees toward East
-CurrLoc = (0,0,0,0)
-    #Intialize CurrLoc as a tuple instead of a list to preserve parameter order
-    #Initalize Curr Loc earlier
-    #Read documentation to understand 4th 4-tuple orientation angle 
-XOffset = 5;
-YOffset = 5;
-ZOffset = -5;
 
 while(! INTERRUPT):
   def buffer():
