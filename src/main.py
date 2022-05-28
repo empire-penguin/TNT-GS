@@ -5,6 +5,8 @@ from mavsdk.offboard import (OffboardError, PositionNedYaw)
 import time
 from os.path import exists
 
+import fsm2.py
+
 if (exists('/dev/tty.usbserial-0001')):
     port = '/dev/tty.usbserial-0001'
     baud = 57600
@@ -85,7 +87,7 @@ async def run():
     except OffboardError as error:
         print(f"Stopping offboard mode failed with error code: {error._result.result}")
 
-
+fsm2()
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
