@@ -15,8 +15,8 @@ def user_input(input):
           print("Please type an integer in [0,5]")
 
 
-input1 = input("Enter an Integer")
-check_user_input(input1)
+val = input("Enter an Integer")
+user_input(input1)
 
 def f(child_conn):
     msg = val
