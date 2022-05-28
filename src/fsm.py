@@ -1,4 +1,5 @@
 #Implementing FSM
+import keyboard
 import asyncio
 from mavsdk import System
 from mavsdk.offboard import (OffboardError, PositionNedYaw)
@@ -24,7 +25,7 @@ LEFT = 1
 RIGHT = 2
 UP = 3
 DOWN = 4
-INTERRUPT = #SPACE KEYINPUT TODO
+INTERRUPT = " "
 
 #North, East, Down, Degrees toward East
 CurrLoc = (0,0,0,0)
@@ -85,7 +86,7 @@ async def run():
 #TODO, change Rotation
 
 
-while(! INTERRUPT):
+while(keyboard.read_key() != INTERRUPT):
   def buffer():
     # TODO this function may require a rework
     print("stay in current position")
