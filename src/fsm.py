@@ -100,12 +100,12 @@ while(! INTERRUPT):
     await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
     await asyncio.sleep(10)
   def up():
-    print("-- Go 0m North, 0m East, -5m Down within local coordinate system, turn to face East")
+    print("move five meters up")
     CurrLoc[2] += ZOffset
     await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
     await asyncio.sleep(10)
   def down():
-    print("-- Go 0m North, 0m East, +5m Down within local coordinate system, turn to face East")
+    print("move five meters down")
     CurrLoc[2] -= ZOffset
     await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
     await asyncio.sleep(10)
