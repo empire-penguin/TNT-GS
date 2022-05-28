@@ -1,81 +1,90 @@
-from pymavlink import mavutil
-import commands
-import sys
+import asyncio
+from mavsdk import System
+from mavsdk.offboard import (OffboardError, PositionNedYaw)
+
 import time
 from os.path import exists
 
 if (exists('/dev/tty.usbserial-0001')):
     port = '/dev/tty.usbserial-0001'
     baud = 57600
-elif (exists('/dev/cu.usbmodem01')):
-    port = '/dev/cu.usbmodem01'
-    baud = 115200
 else:
-    port = 'udpin:localhost:14550'
-    baud = 115200
+    port = 'udp://'
+    baud = 14550
 
-# connect to a drone over mavlink
-drone = mavutil.mavlink_connection(port, baud=baud)
+async def run():
 
-def main():
-    # Wait for a heartbeat
-    drone.wait_heartbeat()
-    print(
-        "Heartbeat from system (system %u component %u)" 
-        % (drone.target_system, drone.target_component)
-    )
-    start_time = time.time()
+    # Initialize the drone
+    drone = System()
+    # Connect to the drone
+    await drone.connect(system_address=port+':'+str(baud))
 
-    # arm the drone
-    # takeoff 10
-
-    # Set computer to control the drone
-    # commands.set_param(drone,b'ARMING_CHECK',0)
-    # commands.get_param(drone, b'ARMING_CHECK')
-
-    
-    commands.set_home(drone)
-    msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
-    while(True):
-        if (msg.result == 0):
-            print("Command completed")
+    # Wait for the drone to acknowledge connection
+    print("Waiting for drone to connect...")
+    async for state in drone.core.connection_state():
+        if state.is_connected:
+            print(f"-- Connected to drone!")
             break
-        else:
-            commands.set_home(drone)
-            msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
-    
-    # commands.set_offboard_mode(drone)
-    # msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
-    # while(True):
-    #     if (msg.result == 0):
-    #         print("Command completed")
-    #         break
-    #     else:
-    #         commands.set_guided_mode(drone)
-    #         msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
 
-    commands.arm(drone)
-    msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
-    while(True):
-        if (msg.result == 0):
-            print("Command completed")
+    # Make sure the GPS and origin is accurate
+    print("Waiting for drone to have a global position estimate...")
+    async for health in drone.telemetry.health():
+        if health.is_global_position_ok and health.is_home_position_ok:
+            print("-- Global position estimate OK")
             break
-        else:
-            commands.arm(drone)
-            msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
 
-    commands.takeoff(drone)
-    msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
-    while(True):
-        if (msg.result == 0):
-            print("Command completed")
-            break
-        else:
-            commands.takeoff(drone)
-            msg = drone.recv_match(type='COMMAND_ACK', blocking=True)
-    
-    while(True):
-        msg = drone.recv_match(type="HEARTBEAT", blocking=True)
-        print(msg)
-    
-main()
+    # Arm the drone
+    print("-- Arming")
+    await drone.action.arm()
+
+    # Make drone hover above origin AKA Home
+    print("-- Taking off")
+    await drone.action.takeoff()
+    await asyncio.sleep(10)
+
+    # Commander the drone to move to a new position
+    print("-- Setting initial setpoint")
+    await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, 0.0, 0.0))
+
+    # Start the remote control loop
+    print("-- Starting offboard")
+    try:
+        await drone.offboard.start()
+    except OffboardError as error:
+        print(f"Starting offboard mode failed with error code: {error._result.result}")
+        print("-- Disarming")
+        await drone.action.disarm()
+        return
+
+    print("-- Go 0m North, 0m East, -5m Down within local coordinate system")
+    await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -5.0, 0.0))
+    await asyncio.sleep(10)
+
+    print("-- Go 5m North, 0m East, -5m Down within local coordinate system, turn to face East")
+    await drone.offboard.set_position_ned(PositionNedYaw(5.0, 0.0, -5.0, 90.0))
+    await asyncio.sleep(10)
+
+    print("-- Go 5m North, 10m East, -5m Down within local coordinate system")
+    await drone.offboard.set_position_ned(PositionNedYaw(5.0, 10.0, -5.0, 90.0))
+    await asyncio.sleep(10)
+
+    print("-- Go 0m North, 10m East, 0m Down within local coordinate system, turn to face South")
+    await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -25.0, 180.0))
+    await asyncio.sleep(10)
+
+    print("-- Land")
+    await drone.action.land()
+    await asyncio.sleep(60)
+
+
+    print("-- Stopping offboard")
+    try:
+        await drone.offboard.stop()
+    except OffboardError as error:
+        print(f"Stopping offboard mode failed with error code: {error._result.result}")
+
+
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(run())

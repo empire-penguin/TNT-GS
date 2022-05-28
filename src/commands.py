@@ -58,8 +58,8 @@ def set_offboard_mode(connection):
         connection.target_component,
         mavutil.mavlink.MAV_CMD_DO_SET_MODE,
         0, # confirmation
-        1, # param1
-        4, # param2
+        209, # param1
+        6, # param2
         0, # param3
         0, # param4
         0, # param5
@@ -114,15 +114,6 @@ def land(connection):
         0, # param5
         0, # param6
         0  # param7
-    )
-
-def loiter(connection):
-    print("LOITERING")
-    connection.mav.command_long_send(
-        connection.target_system,
-        connection.target_component,
-        mavutil.mavlink.MAV_CMD_NAV_LOITER_TIME,
-        0, 5, 0, 0, 0, 0, 0, 0
     )
 
 def get_all_params(connection):
