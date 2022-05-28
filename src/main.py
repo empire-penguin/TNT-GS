@@ -5,7 +5,7 @@ from mavsdk.offboard import (OffboardError, PositionNedYaw)
 import time
 from os.path import exists
 
-import fsm2.py
+import fsm2
 
 if (exists('/dev/tty.usbserial-0001')):
     port = '/dev/tty.usbserial-0001'
