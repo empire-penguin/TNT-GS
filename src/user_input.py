@@ -10,8 +10,8 @@ def user_input(input):
             print("Not an integer")
     else:
         if input in range(0,6):
-          break
-        else
+          pass
+        else:
           print("Please type an integer in [0,5]")
 
 
