@@ -1,12 +1,5 @@
 wheel
 pymavlink
-wxPython
-gnureadline
-billiard
 numpy
-pyparsing
-MAVProxy
-dronekit
-dronekit-sitl
 mavsdk
 asyncio

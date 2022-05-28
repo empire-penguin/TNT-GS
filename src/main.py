@@ -56,6 +56,7 @@ async def run():
         await drone.action.disarm()
         return
 
+    # command the drone to move to a new position
     print("-- Go 0m North, 0m East, -5m Down within local coordinate system")
     await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -5.0, 0.0))
     await asyncio.sleep(10)
@@ -72,11 +73,12 @@ async def run():
     await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, -25.0, 180.0))
     await asyncio.sleep(10)
 
+    # Land the drone
     print("-- Land")
     await drone.action.land()
     await asyncio.sleep(60)
 
-
+    # Stop offboard mode
     print("-- Stopping offboard")
     try:
         await drone.offboard.stop()
