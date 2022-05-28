@@ -78,27 +78,34 @@ async def run():
 CurrLoc = (0,0,0,0)
 XOffset = 5;
 YOffset = 5;
-ZOffset = 5;
+ZOffset = -5;
 
 while(! INTERRUPT):
   def buffer():
-    return #TODO
-    #waypoint function with current location running infinitely in loop
+    # TODO this function may require a rework
+    print("stay in current position")
+    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
+    await asyncio.sleep(10)
   def left():
-    return #TODO
+    print("move five meters to the left")
+    CurrLoc[1] -= YOffset
+    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
+    await asyncio.sleep(10)
   def right():
-    return #TODO
+    print("move five meters to the right")
+    CurrLoc[1] += YOffset
+    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
+    await asyncio.sleep(10)
   def up():
     print("-- Go 0m North, 0m East, -5m Down within local coordinate system, turn to face East")
-    CurrLoc[2] -= YOffset
+    CurrLoc[2] += ZOffset
     await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
     await asyncio.sleep(10)
   def down():
     print("-- Go 0m North, 0m East, +5m Down within local coordinate system, turn to face East")
-    CurrLoc[2] += YOffset
+    CurrLoc[2] -= ZOffset
     await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
     await asyncio.sleep(10)
-    return #TODO
 
   switcher = {
       BUFFER: buffer,
@@ -109,8 +116,7 @@ while(! INTERRUPT):
   }
 
   def switch(input_num):
-      return switcher.get(input_num, default)()
-else:
+      return switcher.get(input_num, default)
   
  #TODO: Landing Protocol
 
