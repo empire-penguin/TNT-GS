@@ -90,48 +90,51 @@ async def run():
 #TODO, change Rotation
 
 
-while(keyboard.read_key() != INTERRUPT):
-  def buffer():
-    # TODO this function may require a rework
-    print("stay in current position")
-    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-    await asyncio.sleep(10)
-  def left():
-    print("move five meters to the left")
-    CurrLoc[1] -= YOffset
-    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-    await asyncio.sleep(10)
-  def right():
-    print("move five meters to the right")
-    CurrLoc[1] += YOffset
-    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-    await asyncio.sleep(10)
-  def up():
-    print("move five meters up")
-    CurrLoc[2] += ZOffset
-    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-    await asyncio.sleep(10)
-  def down():
-    print("move five meters down")
-    CurrLoc[2] -= ZOffset
-    await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
-    await asyncio.sleep(10)
+    while(keyboard.read_key() != INTERRUPT):
+      def buffer():
+        # TODO this function may require a rework
+        print("stay in current position")
+        await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
+        await asyncio.sleep(10)
+      def left():
+        print("move five meters to the left")
+        CurrLoc[1] -= YOffset
+        await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
+        await asyncio.sleep(10)
+      def right():
+        print("move five meters to the right")
+        CurrLoc[1] += YOffset
+        await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
+        await asyncio.sleep(10)
+      def up():
+        print("move five meters up")
+        CurrLoc[2] += ZOffset
+        await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
+        await asyncio.sleep(10)
+      def down():
+        print("move five meters down")
+        CurrLoc[2] -= ZOffset
+        await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
+        await asyncio.sleep(10)
 
-  switcher = {
-      BUFFER: buffer,
-      LEFT: left,
-      RIGHT: right,
-      UP: up,
-      DOWN: down,
-  }
+      switcher = {
+          BUFFER: buffer,
+          LEFT: left,
+          RIGHT: right,
+          UP: up,
+          DOWN: down,
+      }
 
-def switch(input_num):
-  return switcher.get(input_num, default)
+    def switch(input_num):
+      return switcher.get(input_num, default)
 
 
 #Land TODO
 
-await asyncio.sleep(10)
+#Send drone back to flight origin in the sky
+CurrLoc = ORIGIN
+await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
+#landing Proticol with checking telemetry data that currPos = finalPos of (0,0,0,0)
 
 
 if __name__ == "__main__":
