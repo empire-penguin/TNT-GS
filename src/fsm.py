@@ -19,13 +19,17 @@ while(! INTERRUPT):
   def down():
     return #TODO
 
-switcher = {
-    BUFFER: buffer,
-    LEFT: left,
-    RIGHT: right,
-    UP: up,
-    DOWN: down,
-}
+  switcher = {
+      BUFFER: buffer,
+      LEFT: left,
+      RIGHT: right,
+      UP: up,
+      DOWN: down,
+  }
 
-def switch(input_num):
-    return switcher.get(input_num, default)()
+  def switch(input_num):
+      return switcher.get(input_num, default)()
+else:
+  
+ #TODO: Landing Protocol
+
