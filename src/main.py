@@ -5,7 +5,7 @@ from mavsdk.offboard import (OffboardError, PositionNedYaw)
 import time
 from os.path import exists
 
-import fsm2
+from fsm2 import fsm2
 
 if (exists('/dev/tty.usbserial-0001')):
     port = '/dev/tty.usbserial-0001'
@@ -39,11 +39,6 @@ async def run():
     print("-- Arming")
     await drone.action.arm()
 
-    # Make drone hover above origin AKA Home
-    print("-- Taking off")
-    await drone.action.takeoff()
-    await asyncio.sleep(10)
-
     # Commander the drone to move to a new position
     print("-- Setting initial setpoint")
     await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, 0.0, 0.0))
@@ -59,6 +54,8 @@ async def run():
         print("-- Disarming")
         await drone.action.disarm()
         return
+
+    await fsm2(drone)
 
 # # command the drone to move to a new position
 # print("-- Go 0m North, 0m East, -5m Down within local coordinate system")
