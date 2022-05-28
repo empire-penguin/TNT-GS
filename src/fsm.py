@@ -31,7 +31,7 @@ DOWN = 4
 INTERRUPT = " "
 
 
-#North, East, Down, Degrees toward East
+#North, East, Down, Degrees relative to North (+ve is CW from above)
 CurrLoc = (0,0,0,0)
     #Intialize CurrLoc as a tuple instead of a list to preserve parameter order
     #Initalize Curr Loc earlier
