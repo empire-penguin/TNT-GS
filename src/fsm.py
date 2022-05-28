@@ -29,11 +29,12 @@ while(! INTERRUPT):
   def right():
     return #TODO
   def up():
-    print("-- Go Xm North, 0m East, -5m Down within local coordinate system, turn to face East")
+    print("-- Go 0m North, 0m East, -5m Down within local coordinate system, turn to face East")
     CurrLoc[2] -= YOffset
     await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
     await asyncio.sleep(10)
   def down():
+    print("-- Go 0m North, 0m East, +5m Down within local coordinate system, turn to face East")
     CurrLoc[2] += YOffset
     await drone.offboard.set_position_ned(PositionNedYaw(CurrLoc))
     await asyncio.sleep(10)
