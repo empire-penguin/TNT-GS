@@ -48,6 +48,8 @@ async def run():
     print("-- Setting initial setpoint")
     await drone.offboard.set_position_ned(PositionNedYaw(0.0, 0.0, 0.0, 0.0))
 
+    fsm2(drone)
+
     # Start the remote control loop
     print("-- Starting offboard")
     try:
@@ -57,8 +59,6 @@ async def run():
         print("-- Disarming")
         await drone.action.disarm()
         return
-
-    fsm2(drone)
 
 # # command the drone to move to a new position
 # print("-- Go 0m North, 0m East, -5m Down within local coordinate system")
