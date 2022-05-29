@@ -18,3 +18,12 @@ TIMEOUT = 3
 XOffset = 5
 YOffset = 5
 ZOffset = -5
+
+keybinds = {
+    "w": UP,
+    "a": LEFT,
+    "s": DOWN,
+    "d": RIGHT,
+    "q": BUFFER,
+    "e": LAND
+}

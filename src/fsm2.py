@@ -1,4 +1,5 @@
 #Implementing FSM
+from ctypes import sizeof
 from signal import signal
 import keyboard
 import asyncio
@@ -18,48 +19,50 @@ async def fsm2(connection):
     CurrLoc = PositionNedYaw(0,0,-5,0)
 
     flag = 1
-
+    lander = 0
+    
     #signals = [UP,UP,BUFFER,RIGHT,BUFFER,LEFT,BUFFER,DOWN]
-    signals = queue.Queue(maxsize=20)
+    signals = []
 
-    while not INTERRUPT and i < len(signals):
+    while not lander:
 
         #get user input from keyboard
-        input("Enter an integer 0-5: ")
-        try: 
-            val = int(input)
-            if not signals.full() :
-                queue.append(val)
-            else:
-                print("Queue is full")
-        except ValueError:
-            print("Enter an integer")
+        val = input("Enter wasd input ")
+        signals.append(keybinds.get(val))
+        print(len(signals))
         
         # signal = get signal number 0-6 from LSL function
         if flag == 1:
             if (signals[0] == BUFFER):
                 await buffer(connection, CurrLoc)
-                signals.pop(0)
             elif (signals[0] == LEFT):
                 await left(connection, CurrLoc)
-                signals.pop(0)
             elif (signals[0] == RIGHT):
                 await right(connection, CurrLoc)
-                signals.pop(0)
             elif (signals[0] == UP):
                 await up(connection, CurrLoc)
-                signals.pop(0)
             elif (signals[0] == DOWN):
-                await down(connection, CurrLoc)
-                signals.pop(0)
+                if CurrLoc.down_m < -5:
+                    await down(connection, CurrLoc)
+                else:
+                    print("Cannot go down anymore")
             elif (signals[0] == LAND):
                 await land(connection, CurrLoc)
-                signals.pop(0)
+                lander = 1
+                break
             flag = 0
+            signals.pop(0)
         else:
             await buffer(connection, CurrLoc)
-        if signals[i] == BUFFER:
-            flag = 1 
+        if len(signals) > 0:
+            if signals[0] == BUFFER:
+                flag = 1 
+            if signals[0] == LAND:
+                await land(connection, CurrLoc)
+                lander = 1
+                break
+            signals.pop(0)
+        
         
 
-    await land(connection, CurrLoc)
+    #await land(connection, CurrLoc)
