@@ -7,6 +7,7 @@ from mavsdk.offboard import (OffboardError, PositionNedYaw)
 
 import time
 from os.path import exists
+import queue
 
 from macros import *
 from movement import (buffer, left, right, up, down, land)
@@ -18,29 +19,47 @@ async def fsm2(connection):
 
     flag = 1
 
-    i = 0
-    signals = [UP,UP,BUFFER,RIGHT,BUFFER,LEFT,BUFFER,DOWN]
+    #signals = [UP,UP,BUFFER,RIGHT,BUFFER,LEFT,BUFFER,DOWN]
+    signals = queue.Queue(maxsize=20)
 
     while not INTERRUPT and i < len(signals):
+
+        #get user input from keyboard
+        input("Enter an integer 0-5: ")
+        try: 
+            val = int(input)
+            if not signals.full() :
+                queue.append(val)
+            else:
+                print("Queue is full")
+        except ValueError:
+            print("Enter an integer")
+        
         # signal = get signal number 0-6 from LSL function
         if flag == 1:
-            if (signals[i] == BUFFER):
+            if (signals[0] == BUFFER):
                 await buffer(connection, CurrLoc)
-            elif (signals[i] == LEFT):
+                signals.pop(0)
+            elif (signals[0] == LEFT):
                 await left(connection, CurrLoc)
-            elif (signals[i] == RIGHT):
+                signals.pop(0)
+            elif (signals[0] == RIGHT):
                 await right(connection, CurrLoc)
-            elif (signals[i] == UP):
+                signals.pop(0)
+            elif (signals[0] == UP):
                 await up(connection, CurrLoc)
-            elif (signals[i] == DOWN):
+                signals.pop(0)
+            elif (signals[0] == DOWN):
                 await down(connection, CurrLoc)
-            elif (signals[i] == LAND):
+                signals.pop(0)
+            elif (signals[0] == LAND):
                 await land(connection, CurrLoc)
+                signals.pop(0)
             flag = 0
         else:
             await buffer(connection, CurrLoc)
         if signals[i] == BUFFER:
             flag = 1 
-        i += 1
+        
 
     await land(connection, CurrLoc)
