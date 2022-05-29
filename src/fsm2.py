@@ -29,7 +29,7 @@ async def fsm2(connection):
         #get user input from keyboard
         val = input("Enter wasd input ")
         signals.append(keybinds.get(val))
-        print(len(signals))
+        #print(len(signals))
         
         # signal = get signal number 0-6 from LSL function
         if flag == 1:
